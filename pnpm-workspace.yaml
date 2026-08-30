@@ -1,0 +1,9 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+catalog:
+  typescript: 5.9.2
+  zod: 4.1.5
+  react: 19.1.1
+  react-dom: 19.1.1
