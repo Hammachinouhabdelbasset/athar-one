@@ -1,0 +1,74 @@
+BEGIN;
+
+-- Demo fixtures only. All tenant records are marked is_test_data and must be excluded from real metrics.
+INSERT INTO athar.users (id, email, display_name) VALUES
+  ('00000000-0000-4000-8000-000000000101', 'founder@atlas.demo', 'Atlas Founder'),
+  ('00000000-0000-4000-8000-000000000102', 'manager@atlas.demo', 'Digital Manager'),
+  ('00000000-0000-4000-8000-000000000103', 'finance@atlas.demo', 'Finance Admin'),
+  ('00000000-0000-4000-8000-000000000104', 'member@atlas.demo', 'Team Member'),
+  ('00000000-0000-4000-8000-000000000105', 'contractor@atlas.demo', 'Studio Contractor'),
+  ('00000000-0000-4000-8000-000000000106', 'client@atlas.demo', 'Client Reviewer'),
+  ('00000000-0000-4000-8000-000000000201', 'founder@northstar.demo', 'Northstar Founder')
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO athar.tenants (id, slug, name, default_locale, timezone, is_test_data) VALUES
+  ('00000000-0000-4000-8000-000000000001', 'atlas-demo', 'Atlas Group — Demo', 'ar-DZ', 'Africa/Algiers', true),
+  ('00000000-0000-4000-8000-000000000002', 'northstar-demo', 'Northstar — Demo', 'fr-FR', 'Europe/Paris', true)
+ON CONFLICT (id) DO NOTHING;
+
+SELECT set_config('app.tenant_id', '00000000-0000-4000-8000-000000000001', true);
+INSERT INTO athar.groups (id, tenant_id, name) VALUES
+  ('00000000-0000-4000-8000-000000000010', '00000000-0000-4000-8000-000000000001', 'Atlas Group')
+ON CONFLICT (id) DO NOTHING;
+INSERT INTO athar.legal_entities (id, tenant_id, group_id, name, country_code) VALUES
+  ('00000000-0000-4000-8000-000000000011', '00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000010', 'Atlas Digital Services', 'DZ')
+ON CONFLICT (id) DO NOTHING;
+INSERT INTO athar.business_units (id, tenant_id, legal_entity_id, code, name, default_locale) VALUES
+  ('00000000-0000-4000-8000-000000000021', '00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000011', 'DIGITAL', 'Digital', 'ar-DZ'),
+  ('00000000-0000-4000-8000-000000000022', '00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000011', 'SOFTWARE', 'Software', 'en'),
+  ('00000000-0000-4000-8000-000000000023', '00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000011', 'STUDIO', 'Studio', 'fr-FR'),
+  ('00000000-0000-4000-8000-000000000024', '00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000011', 'ACADEMY', 'Academy', 'ar-DZ')
+ON CONFLICT (id) DO NOTHING;
+INSERT INTO athar.tenant_settings (id, tenant_id, locale, timezone, week_starts_on) VALUES
+  ('00000000-0000-4000-8000-000000000030', '00000000-0000-4000-8000-000000000001', 'ar-DZ', 'Africa/Algiers', 6)
+ON CONFLICT (tenant_id) DO NOTHING;
+INSERT INTO athar.entitlements (tenant_id, module_key, enabled) VALUES
+  ('00000000-0000-4000-8000-000000000001', 'core', true),
+  ('00000000-0000-4000-8000-000000000001', 'agency', false)
+ON CONFLICT (tenant_id, module_key) DO UPDATE SET enabled = EXCLUDED.enabled;
+INSERT INTO athar.memberships (id, tenant_id, user_id, status) VALUES
+  ('00000000-0000-4000-8000-000000000111', '00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000101', 'active'),
+  ('00000000-0000-4000-8000-000000000112', '00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000102', 'active'),
+  ('00000000-0000-4000-8000-000000000113', '00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000103', 'active'),
+  ('00000000-0000-4000-8000-000000000114', '00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000104', 'active'),
+  ('00000000-0000-4000-8000-000000000115', '00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000105', 'active'),
+  ('00000000-0000-4000-8000-000000000116', '00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000106', 'active')
+ON CONFLICT (tenant_id, user_id) DO NOTHING;
+INSERT INTO athar.role_bindings (tenant_id, membership_id, role_key, scope_type) VALUES
+  ('00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000111', 'founder', 'tenant'),
+  ('00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000112', 'unit_manager', 'tenant'),
+  ('00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000113', 'finance_admin', 'tenant'),
+  ('00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000114', 'member', 'tenant'),
+  ('00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000115', 'contractor', 'tenant'),
+  ('00000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000116', 'client', 'tenant');
+
+SELECT set_config('app.tenant_id', '00000000-0000-4000-8000-000000000002', true);
+INSERT INTO athar.legal_entities (id, tenant_id, name, country_code) VALUES
+  ('00000000-0000-4000-8000-000000000211', '00000000-0000-4000-8000-000000000002', 'Northstar SARL', 'FR')
+ON CONFLICT (id) DO NOTHING;
+INSERT INTO athar.business_units (id, tenant_id, legal_entity_id, code, name, default_locale) VALUES
+  ('00000000-0000-4000-8000-000000000221', '00000000-0000-4000-8000-000000000002', '00000000-0000-4000-8000-000000000211', 'OPS', 'Operations', 'fr-FR')
+ON CONFLICT (id) DO NOTHING;
+INSERT INTO athar.tenant_settings (id, tenant_id, locale, timezone, week_starts_on) VALUES
+  ('00000000-0000-4000-8000-000000000230', '00000000-0000-4000-8000-000000000002', 'fr-FR', 'Europe/Paris', 1)
+ON CONFLICT (tenant_id) DO NOTHING;
+INSERT INTO athar.entitlements (tenant_id, module_key, enabled) VALUES
+  ('00000000-0000-4000-8000-000000000002', 'core', true)
+ON CONFLICT (tenant_id, module_key) DO UPDATE SET enabled = EXCLUDED.enabled;
+INSERT INTO athar.memberships (id, tenant_id, user_id, status) VALUES
+  ('00000000-0000-4000-8000-000000000211', '00000000-0000-4000-8000-000000000002', '00000000-0000-4000-8000-000000000201', 'active')
+ON CONFLICT (tenant_id, user_id) DO NOTHING;
+INSERT INTO athar.role_bindings (tenant_id, membership_id, role_key, scope_type) VALUES
+  ('00000000-0000-4000-8000-000000000002', '00000000-0000-4000-8000-000000000211', 'founder', 'tenant');
+
+COMMIT;
