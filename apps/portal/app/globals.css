@@ -1,0 +1,20 @@
+:root { --canvas:#fff; --surface:#f9f8f7; --border:#e6e5e3; --text:#2c2c2b; --muted:#6f6c67; --accent:#2783de; --accent-soft:#e5f2fc; --positive:#46a171; --positive-soft:#e8f1ec; }
+@media (prefers-color-scheme: dark) { :root { --canvas:#191919; --surface:#202020; --border:rgba(255,255,255,.18); --text:#fff; --muted:rgba(255,255,255,.68); --accent:#5e9fe8; --accent-soft:rgba(94,159,232,.12); --positive:#72bc8f; --positive-soft:rgba(114,188,143,.12); } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--surface); color: var(--text); font: 400 15px/1.5 Inter, system-ui, sans-serif; }
+.portal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; background: var(--canvas); border-bottom: 1px solid var(--border); }
+.portal-brand { display: flex; align-items: center; gap: 12px; }
+.portal-brand small { display: block; color: var(--muted); font-size: 12px; }
+.portal-mark { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 9px; background: var(--text); color: var(--canvas); font-weight: 700; }
+.portal-button { min-height: 44px; padding: 0 18px; border: 0; border-radius: 8px; background: var(--accent); color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+.portal-button:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 2px; }
+.portal-content { max-width: 960px; margin: 0 auto; padding: 48px 24px 80px; }
+.portal-content h1 { margin: 0 0 6px; font-size: 32px; letter-spacing: -.02em; }
+.portal-lede { margin: 0 0 32px; color: var(--muted); font-size: 16px; }
+.portal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+.portal-card { padding: 20px; border: 1px solid var(--border); border-radius: 12px; background: var(--canvas); }
+.portal-card header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.portal-card h2 { margin: 0; font-size: 16px; }
+.portal-card > p { margin: 6px 0 16px; color: var(--muted); font-size: 13px; }
+.portal-badge { padding: 3px 10px; border-radius: 999px; background: var(--positive-soft); color: var(--positive); font-size: 12px; font-weight: 600; }
+.portal-empty { padding: 18px; border: 1px dashed var(--border); border-radius: 8px; color: var(--muted); font-size: 13px; text-align: center; }
